@@ -17,15 +17,6 @@ class EventManagementApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch().copyWith(
           secondary: Colors.amberAccent,
         ),
-        scaffoldBackgroundColor: Colors.white,
-        textTheme: TextTheme(
-          titleLarge: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.black87,
-          ),
-          bodyMedium: TextStyle(fontSize: 16, color: Colors.black54),
-        ),
       ),
       home: BottomNavScreen(),
     );
@@ -40,12 +31,21 @@ class BottomNavScreen extends StatefulWidget {
 class _BottomNavScreenState extends State<BottomNavScreen> {
   int _currentIndex = 0;
 
-  final List<Widget> _screens = [
-    HomeScreen(), // Upcoming Events
-    PastEventsScreen(), // Past Events
-    ExploreScreen(), // Explore/Search
-    AccountScreen(), // Profile/Account
-  ];
+  // Shared past events list
+  final List<Map<String, String>> pastEvents = [];
+
+  late final List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    _screens = [
+      HomeScreen(pastEvents: pastEvents),
+      PastEventsScreen(pastEvents: pastEvents),
+      ExploreScreen(),
+      AccountScreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,11 +63,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Explore'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
         ],
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
+        onTap: (index) => setState(() => _currentIndex = index),
       ),
     );
   }

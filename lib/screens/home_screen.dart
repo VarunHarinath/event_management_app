@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'event_detail_screen.dart';
+import 'rsvp_form_dialog.dart';
 
 class HomeScreen extends StatefulWidget {
+  final List<Map<String, String>> pastEvents;
+  HomeScreen({required this.pastEvents});
+
   @override
   _HomeScreenState createState() => _HomeScreenState();
 }
@@ -14,7 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
       "time": "10:00 AM - 4:00 PM",
       "location": "Online - Zoom",
       "organizer": "Flutter Devs",
-      "description": "Hands-on workshop to learn Flutter and build apps.",
+      "description":
+          "Hands-on workshop to learn Flutter and build beautiful mobile apps.",
       "image": "",
     },
   ];
@@ -22,6 +27,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void addEvent(Map<String, String> newEvent) {
     setState(() {
       events.add(newEvent);
+    });
+  }
+
+  void moveToPast(Map<String, String> event) {
+    setState(() {
+      events.remove(event);
+      widget.pastEvents.add(event);
     });
   }
 
@@ -41,7 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          elevation: 4,
         ),
       ),
       floatingActionButton: FloatingActionButton(
@@ -76,57 +87,43 @@ class _HomeScreenState extends State<HomeScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Event image
-                    ClipRRect(
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(20),
+                shadowColor: Colors.deepPurpleAccent.withOpacity(0.3),
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        event['title']!,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                      child: event['image']!.isNotEmpty
-                          ? Image.network(
-                              event['image']!,
-                              height: 180,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            )
-                          : Container(height: 180, color: Colors.grey.shade300),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            event['title']!,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
+                      SizedBox(height: 8),
+                      Text(event['date']! + ' | ' + event['time']!),
+                      SizedBox(height: 4),
+                      Text(event['location']!),
+                      SizedBox(height: 12),
+                      Text(event['description']!),
+                      SizedBox(height: 16),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            final rsvp = await showDialog(
+                              context: context,
+                              builder: (_) => RSVPFormDialog(event: event),
+                            );
+                            if (rsvp != null) moveToPast(event);
+                          },
+                          child: Text('RSVP'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.deepPurpleAccent,
                           ),
-                          SizedBox(height: 8),
-                          Text(
-                            "${event['date']} | ${event['time']!}",
-                            style: TextStyle(color: Colors.grey[700]),
-                          ),
-                          Text(
-                            event['location']!,
-                            style: TextStyle(color: Colors.grey[700]),
-                          ),
-                          Text(
-                            event['organizer']!,
-                            style: TextStyle(color: Colors.grey[700]),
-                          ),
-                          SizedBox(height: 12),
-                          Text(
-                            event['description']!,
-                            style: TextStyle(fontSize: 14),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
@@ -137,7 +134,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// Event form dialog
+// ---------------- Event Form Dialog ------------------
+
 class EventFormDialog extends StatefulWidget {
   @override
   _EventFormDialogState createState() => _EventFormDialogState();
@@ -190,7 +188,7 @@ class _EventFormDialogState extends State<EventFormDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => Navigator.pop(context, null),
           child: Text('Cancel'),
         ),
         ElevatedButton(

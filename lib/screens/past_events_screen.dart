@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'event_detail_screen.dart';
 
 class PastEventsScreen extends StatelessWidget {
-  final List<Map<String, String>> pastEvents = [
-    {"title": "Past Flutter Workshop", "date": "Nov 10, 2025", "image": ""},
-    {"title": "Past AI Conference", "date": "Nov 15, 2025", "image": ""},
-  ];
+  final List<Map<String, String>> pastEvents;
+  PastEventsScreen({required this.pastEvents});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +21,6 @@ class PastEventsScreen extends StatelessWidget {
               ),
             ),
           ),
-          elevation: 4,
         ),
       ),
       body: Padding(
@@ -44,26 +41,8 @@ class PastEventsScreen extends StatelessWidget {
               child: Card(
                 margin: EdgeInsets.only(bottom: 16),
                 elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
                 child: ListTile(
-                  leading: event['image']!.isNotEmpty
-                      ? Image.network(
-                          event['image']!,
-                          width: 60,
-                          fit: BoxFit.cover,
-                        )
-                      : Container(
-                          width: 60,
-                          height: 60,
-                          color: Colors.grey.shade300,
-                          child: Icon(Icons.image_not_supported),
-                        ),
-                  title: Text(
-                    event['title']!,
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
+                  title: Text(event['title']!),
                   subtitle: Text(event['date']!),
                   trailing: Icon(Icons.arrow_forward_ios, size: 16),
                 ),
