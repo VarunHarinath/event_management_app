@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'event_detail_screen.dart';
 import 'rsvp_form_dialog.dart';
-import 'past_events_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   final List<Map<String, String>> pastEvents;
 
-  HomeScreen({required this.pastEvents});
+  const HomeScreen({required this.pastEvents, Key? key}) : super(key: key);
 
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -22,10 +21,11 @@ class _HomeScreenState extends State<HomeScreen> {
       "organizer": "Flutter Devs",
       "description":
           "Hands-on workshop to learn Flutter and build beautiful mobile apps.",
-      "image": "", // leave empty for online handling
+      "image": "",
     },
   ];
 
+  // Move RSVP'd event to past events safely
   void moveToPast(Map<String, String> event) {
     setState(() {
       events.remove(event);
@@ -33,6 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // Handle RSVP dialog
   void handleRSVP(Map<String, String> event) async {
     final rsvp = await showDialog<Map<String, String>>(
       context: context,
@@ -80,6 +81,15 @@ class _HomeScreenState extends State<HomeScreen> {
           itemCount: events.length,
           itemBuilder: (context, index) {
             final event = events[index];
+
+            final title = event['title'] ?? 'No Title';
+            final date = event['date'] ?? 'No Date';
+            final time = event['time'] ?? '';
+            final location = event['location'] ?? 'No Location';
+            final organizer = event['organizer'] ?? 'No Organizer';
+            final description = event['description'] ?? '';
+            final image = event['image'] ?? '';
+
             return GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -102,13 +112,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (event['image'] != null && event['image']!.isNotEmpty)
+                    if (image.isNotEmpty)
                       ClipRRect(
                         borderRadius: BorderRadius.vertical(
                           top: Radius.circular(20),
                         ),
                         child: Image.network(
-                          event['image']!,
+                          image,
                           height: 180,
                           width: double.infinity,
                           fit: BoxFit.cover,
@@ -120,7 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            event['title']!,
+                            title,
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
@@ -136,7 +146,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               SizedBox(width: 4),
                               Text(
-                                "${event['date']} | ${event['time']}",
+                                "$date | $time",
                                 style: TextStyle(
                                   color: Colors.grey[700],
                                   fontSize: 14,
@@ -154,7 +164,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               SizedBox(width: 4),
                               Text(
-                                event['location'] ?? '',
+                                location,
                                 style: TextStyle(
                                   color: Colors.grey[700],
                                   fontSize: 14,
@@ -168,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Icon(Icons.person, size: 16, color: Colors.grey),
                               SizedBox(width: 4),
                               Text(
-                                event['organizer'] ?? '',
+                                organizer,
                                 style: TextStyle(
                                   color: Colors.grey[700],
                                   fontSize: 14,
@@ -177,10 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                           SizedBox(height: 12),
-                          Text(
-                            event['description'] ?? '',
-                            style: TextStyle(fontSize: 14),
-                          ),
+                          Text(description, style: TextStyle(fontSize: 14)),
                           SizedBox(height: 16),
                           Center(
                             child: ElevatedButton(

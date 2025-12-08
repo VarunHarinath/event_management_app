@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// Simple account/profile page
 class AccountScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -26,7 +27,7 @@ class AccountScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundColor: Colors.grey.shade300, // blank/fallback avatar
+              backgroundColor: Colors.grey.shade300, // fallback avatar
               child: Icon(Icons.person, size: 50, color: Colors.white),
             ),
             SizedBox(height: 16),

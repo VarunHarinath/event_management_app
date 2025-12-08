@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'event_detail_screen.dart';
 
+// Simple search/explore screen for events
 class ExploreScreen extends StatefulWidget {
   @override
   _ExploreScreenState createState() => _ExploreScreenState();

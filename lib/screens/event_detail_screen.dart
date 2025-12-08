@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+// Detailed view of an event
+// Optional callback for RSVP so HomeScreen can update past events
 class EventDetailScreen extends StatelessWidget {
   final Map<String, String> event;
   final VoidCallback? onRSVP;
@@ -57,6 +59,7 @@ class EventDetailScreen extends StatelessWidget {
                   Center(
                     child: ElevatedButton(
                       onPressed: () {
+                        // Trigger RSVP callback from HomeScreen and go back
                         if (onRSVP != null) onRSVP!();
                         Navigator.pop(context);
                       },
