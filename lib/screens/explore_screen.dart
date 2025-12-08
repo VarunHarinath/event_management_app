@@ -8,30 +8,10 @@ class ExploreScreen extends StatefulWidget {
 
 class _ExploreScreenState extends State<ExploreScreen> {
   final List<Map<String, String>> allEvents = [
-    {
-      "title": "Workshops",
-      "date": "Where you find other creatord",
-      "image":
-          "https://placehold.co/400x400.png?text=Flutter+Workshop&bg=6200ee&fg=ffffff",
-    },
-    {
-      "title": "Conferences",
-      "date": "This is where you present your paper (Research)",
-      "image":
-          "https://placehold.co/400x400.png?text=AI+Conference&bg=03dac5&fg=000000",
-    },
-    {
-      "title": "Hackathons",
-      "date": "Unleash Your self",
-      "image":
-          "https://placehold.co/400x400.png?text=Music+Fest&bg=ff0266&fg=ffffff",
-    },
-    {
-      "title": "Tech Meetups",
-      "date": "I love this part",
-      "image":
-          "https://placehold.co/400x400.png?text=Tech+Meetup&bg=ffab00&fg=000000",
-    },
+    {"title": "Workshops", "date": "Find other creators", "image": ""},
+    {"title": "Conferences", "date": "Present your paper", "image": ""},
+    {"title": "Hackathons", "date": "Unleash yourself", "image": ""},
+    {"title": "Tech Meetups", "date": "I love this part", "image": ""},
   ];
 
   String query = "";
@@ -63,27 +43,20 @@ class _ExploreScreenState extends State<ExploreScreen> {
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
-            // Search bar
             TextField(
               decoration: InputDecoration(
                 hintText: 'Search events...',
                 prefixIcon: Icon(Icons.search),
                 filled: true,
                 fillColor: Colors.grey.shade200,
-                contentPadding: EdgeInsets.symmetric(vertical: 14),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
               ),
-              onChanged: (val) {
-                setState(() {
-                  query = val;
-                });
-              },
+              onChanged: (val) => setState(() => query = val),
             ),
             SizedBox(height: 16),
-
             Expanded(
               child: GridView.builder(
                 itemCount: filteredEvents.length,
@@ -95,15 +68,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 ),
                 itemBuilder: (context, index) {
                   final event = filteredEvents[index];
-
-                  final gradientColors = [
-                    [Colors.pink.shade400, Colors.pink.shade200],
-                    [Colors.deepPurple.shade400, Colors.deepPurple.shade200],
-                    [Colors.teal.shade400, Colors.teal.shade200],
-                    [Colors.orange.shade400, Colors.orange.shade200],
-                  ];
-
-                  final colors = gradientColors[index % gradientColors.length];
+                  final colors = [Colors.pink.shade400, Colors.pink.shade200];
 
                   return GestureDetector(
                     onTap: () {

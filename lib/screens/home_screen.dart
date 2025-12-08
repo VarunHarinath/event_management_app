@@ -14,10 +14,8 @@ class _HomeScreenState extends State<HomeScreen> {
       "time": "10:00 AM - 4:00 PM",
       "location": "Online - Zoom",
       "organizer": "Flutter Devs",
-      "description":
-          "Hands-on workshop to learn Flutter and build beautiful mobile apps.",
-      "image":
-          "https://placehold.co/600x300.png?text=Flutter+Workshop&bg=6200ee&fg=ffffff",
+      "description": "Hands-on workshop to learn Flutter and build apps.",
+      "image": "",
     },
   ];
 
@@ -78,7 +76,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
                 ),
-                shadowColor: Colors.deepPurpleAccent.withOpacity(0.3),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -87,106 +84,44 @@ class _HomeScreenState extends State<HomeScreen> {
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(20),
                       ),
-                      child: Image.network(
-                        event['image']!,
-                        height: 180,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
+                      child: event['image']!.isNotEmpty
+                          ? Image.network(
+                              event['image']!,
+                              height: 180,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            )
+                          : Container(height: 180, color: Colors.grey.shade300),
                     ),
                     Padding(
                       padding: EdgeInsets.all(16),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Event title
                           Text(
                             event['title']!,
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black87,
                             ),
                           ),
                           SizedBox(height: 8),
-                          // Date & Time
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.calendar_today,
-                                size: 16,
-                                color: Colors.grey,
-                              ),
-                              SizedBox(width: 4),
-                              Text(
-                                event['date']! + ' | ' + event['time']!,
-                                style: TextStyle(
-                                  color: Colors.grey[700],
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            "${event['date']} | ${event['time']!}",
+                            style: TextStyle(color: Colors.grey[700]),
                           ),
-                          SizedBox(height: 4),
-                          // Location
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.location_on,
-                                size: 16,
-                                color: Colors.grey,
-                              ),
-                              SizedBox(width: 4),
-                              Text(
-                                event['location']!,
-                                style: TextStyle(
-                                  color: Colors.grey[700],
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            event['location']!,
+                            style: TextStyle(color: Colors.grey[700]),
                           ),
-                          SizedBox(height: 4),
-                          // Organizer
-                          Row(
-                            children: [
-                              Icon(Icons.person, size: 16, color: Colors.grey),
-                              SizedBox(width: 4),
-                              Text(
-                                event['organizer']!,
-                                style: TextStyle(
-                                  color: Colors.grey[700],
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            event['organizer']!,
+                            style: TextStyle(color: Colors.grey[700]),
                           ),
                           SizedBox(height: 12),
-                          // Description
                           Text(
                             event['description']!,
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 14,
-                            ),
-                          ),
-                          SizedBox(height: 16),
-                          // RSVP Button
-                          Center(
-                            child: ElevatedButton(
-                              onPressed: () {},
-                              child: Text('RSVP'),
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 40,
-                                  vertical: 14,
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                backgroundColor: Colors.deepPurpleAccent,
-                              ),
-                            ),
+                            style: TextStyle(fontSize: 14),
                           ),
                         ],
                       ),
@@ -202,8 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// ---------------- Event Form Dialog ------------------
-
+// Event form dialog
 class EventFormDialog extends StatefulWidget {
   @override
   _EventFormDialogState createState() => _EventFormDialogState();
@@ -256,7 +190,7 @@ class _EventFormDialogState extends State<EventFormDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context, null),
+          onPressed: () => Navigator.pop(context),
           child: Text('Cancel'),
         ),
         ElevatedButton(

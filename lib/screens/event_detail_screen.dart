@@ -26,12 +26,14 @@ class EventDetailScreen extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Image.network(
-              event['image']!,
-              fit: BoxFit.cover,
-              height: 250,
-              width: double.infinity,
-            ),
+            event['image']!.isNotEmpty
+                ? Image.network(
+                    event['image']!,
+                    height: 250,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  )
+                : Container(height: 250, color: Colors.grey.shade300),
             Padding(
               padding: EdgeInsets.all(16),
               child: Column(
@@ -48,7 +50,7 @@ class EventDetailScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 16),
                   Text(
-                    'This is a detailed description of the event. You can add more information here about speakers, location, timing, and other relevant details.',
+                    'Detailed description of the event goes here.',
                     style: TextStyle(fontSize: 16),
                   ),
                   SizedBox(height: 20),

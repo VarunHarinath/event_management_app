@@ -3,18 +3,8 @@ import 'event_detail_screen.dart';
 
 class PastEventsScreen extends StatelessWidget {
   final List<Map<String, String>> pastEvents = [
-    {
-      "title": "Past Flutter Workshop",
-      "date": "Nov 10, 2025",
-      "image":
-          "https://placehold.co/400x400.png?text=Past+Flutter+Workshop&bg=bb86fc&fg=000000",
-    },
-    {
-      "title": "Past AI Conference",
-      "date": "Nov 15, 2025",
-      "image":
-          "https://placehold.co/400x400.png?text=Past+AI+Conference&bg=03dac5&fg=000000",
-    },
+    {"title": "Past Flutter Workshop", "date": "Nov 10, 2025", "image": ""},
+    {"title": "Past AI Conference", "date": "Nov 15, 2025", "image": ""},
   ];
 
   @override
@@ -58,11 +48,18 @@ class PastEventsScreen extends StatelessWidget {
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: ListTile(
-                  leading: Image.network(
-                    event['image']!,
-                    width: 60,
-                    fit: BoxFit.cover,
-                  ),
+                  leading: event['image']!.isNotEmpty
+                      ? Image.network(
+                          event['image']!,
+                          width: 60,
+                          fit: BoxFit.cover,
+                        )
+                      : Container(
+                          width: 60,
+                          height: 60,
+                          color: Colors.grey.shade300,
+                          child: Icon(Icons.image_not_supported),
+                        ),
                   title: Text(
                     event['title']!,
                     style: TextStyle(fontWeight: FontWeight.bold),

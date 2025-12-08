@@ -26,9 +26,8 @@ class AccountScreen extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 50,
-              backgroundImage: NetworkImage(
-                "https://placehold.co/100x100.png?text=User",
-              ),
+              backgroundColor: Colors.grey.shade300, // blank/fallback avatar
+              child: Icon(Icons.person, size: 50, color: Colors.white),
             ),
             SizedBox(height: 16),
             Text(
