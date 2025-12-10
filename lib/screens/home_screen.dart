@@ -42,6 +42,144 @@ class _HomeScreenState extends State<HomeScreen> {
     if (rsvp != null) moveToPast(event);
   }
 
+  // Show add event form dialog
+  Future<Map<String, String>?> _showAddEventDialog() async {
+    final _formKey = GlobalKey<FormState>();
+    String title = '';
+    String date = '';
+    String time = '';
+    String location = '';
+    String organizer = '';
+    String description = '';
+    String image = '';
+
+    // Persistent controllers for date and time
+    final TextEditingController dateController = TextEditingController();
+    final TextEditingController timeController = TextEditingController();
+
+    return showDialog<Map<String, String>>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Add New Event'),
+          content: SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Title'),
+                    validator: (val) =>
+                        val == null || val.isEmpty ? 'Enter title' : null,
+                    onSaved: (val) => title = val!.trim(),
+                  ),
+                  SizedBox(height: 8),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Location'),
+                    validator: (val) =>
+                        val == null || val.isEmpty ? 'Enter location' : null,
+                    onSaved: (val) => location = val!.trim(),
+                  ),
+                  SizedBox(height: 8),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Organizer'),
+                    validator: (val) =>
+                        val == null || val.isEmpty ? 'Enter organizer' : null,
+                    onSaved: (val) => organizer = val!.trim(),
+                  ),
+                  SizedBox(height: 8),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Description'),
+                    validator: (val) =>
+                        val == null || val.isEmpty ? 'Enter description' : null,
+                    onSaved: (val) => description = val!.trim(),
+                  ),
+                  SizedBox(height: 8),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'Image URL (optional)',
+                    ),
+                    onSaved: (val) => image = val?.trim() ?? '',
+                  ),
+                  SizedBox(height: 8),
+                  // Date field
+                  TextFormField(
+                    controller: dateController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: 'Date',
+                      suffixIcon: Icon(Icons.calendar_today),
+                    ),
+                    onTap: () async {
+                      DateTime? picked = await showDatePicker(
+                        context: context,
+                        initialDate: DateTime.now(),
+                        firstDate: DateTime(2023),
+                        lastDate: DateTime(2030),
+                      );
+                      if (picked != null) {
+                        date = '${picked.year}-${picked.month}-${picked.day}';
+                        dateController.text = date;
+                      }
+                    },
+                    validator: (val) =>
+                        val == null || val.isEmpty ? 'Select date' : null,
+                  ),
+                  SizedBox(height: 8),
+                  // Time field
+                  TextFormField(
+                    controller: timeController,
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: 'Time',
+                      suffixIcon: Icon(Icons.access_time),
+                    ),
+                    onTap: () async {
+                      TimeOfDay? picked = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      );
+                      if (picked != null) {
+                        time = picked.format(context);
+                        timeController.text = time;
+                      }
+                    },
+                    validator: (val) =>
+                        val == null || val.isEmpty ? 'Select time' : null,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, null),
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  Navigator.pop(context, {
+                    'title': title,
+                    'date': date,
+                    'time': time,
+                    'location': location,
+                    'organizer': organizer,
+                    'description': description,
+                    'image': image,
+                  });
+                }
+              },
+              child: Text('Add Event'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,10 +200,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final newEvent = await showDialog<Map<String, String>>(
-            context: context,
-            builder: (_) => RSVPFormDialog(event: {}),
-          );
+          final newEvent = await _showAddEventDialog();
           if (newEvent != null) {
             setState(() {
               events.add(newEvent);
