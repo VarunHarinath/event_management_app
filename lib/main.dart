@@ -1,65 +1,78 @@
 import 'package:flutter/material.dart';
+
+// Import the main screens of the app
 import 'screens/home_screen.dart';
 import 'screens/past_events_screen.dart';
 import 'screens/explore_screen.dart';
 import 'screens/account_screen.dart';
 
 void main() => runApp(EventManagementApp());
+// The main() function is the entry point of the Flutter app.
+// runApp() takes a widget and makes it the root of the widget tree.
+// Here, EventManagementApp is the root widget of our app.
 
-// Entry point for the app. Wraps everything inside MaterialApp and sets the theme.
+/// The root widget of the Event Management App.
+/// Uses MaterialApp to provide material design structure, theming, and routing.
 class EventManagementApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Event Management',
-      debugShowCheckedModeBanner: false,
+      title: 'Event Management', // App title
+      debugShowCheckedModeBanner: false, // Hides the debug banner
       theme: ThemeData(
+        // Primary color for app bars, buttons, etc.
         primaryColor: Colors.deepPurpleAccent,
+        // Secondary (accent) color for floating buttons, highlights, etc.
         colorScheme: ColorScheme.fromSwatch().copyWith(
           secondary: Colors.amberAccent,
         ),
       ),
-      home: BottomNavScreen(), // Main bottom navigation screen
+      home: BottomNavScreen(), // Starting screen with bottom navigation
     );
   }
 }
 
-// Handles the bottom navigation and switching between main sections
+/// Main screen with bottom navigation bar to switch between main sections
 class BottomNavScreen extends StatefulWidget {
   @override
   _BottomNavScreenState createState() => _BottomNavScreenState();
 }
 
 class _BottomNavScreenState extends State<BottomNavScreen> {
-  int _currentIndex = 0;
+  int _currentIndex = 0; // Tracks which tab is currently selected
 
-  // Shared list of past events; accessible to both Home and Past Events screens
+  // Shared list to store past events
+  // This list is passed to both HomeScreen and PastEventsScreen to keep data in sync
   final List<Map<String, String>> pastEvents = [];
 
+  // List of all main screens for bottom navigation
   late final List<Widget> _screens;
 
   @override
   void initState() {
     super.initState();
-    // Initialize all screens once with the shared pastEvents list
+    // Initialize all screens once and pass the shared pastEvents list where needed
     _screens = [
-      HomeScreen(pastEvents: pastEvents),
-      PastEventsScreen(pastEvents: pastEvents),
-      ExploreScreen(),
-      AccountScreen(),
+      HomeScreen(pastEvents: pastEvents), // Upcoming events / home page
+      PastEventsScreen(pastEvents: pastEvents), // Past events page
+      ExploreScreen(), // Explore events page
+      AccountScreen(), // User account/profile page
     ];
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_currentIndex], // Show current screen
+      // Shows the current selected screen
+      body: _screens[_currentIndex],
+
+      // Bottom navigation bar to switch between sections
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
+        currentIndex: _currentIndex, // Highlights the selected item
         selectedItemColor: Colors.deepPurpleAccent,
         unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed, // Keeps all items visible
+        showUnselectedLabels: true, // Show labels for all items
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.event), label: 'Upcoming'),
           BottomNavigationBarItem(icon: Icon(Icons.history), label: 'Past'),
@@ -67,6 +80,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
         ],
         onTap: (index) => setState(() => _currentIndex = index),
+        // When a tab is tapped, update the current index and rebuild UI
       ),
     );
   }

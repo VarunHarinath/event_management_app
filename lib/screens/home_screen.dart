@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'event_detail_screen.dart';
 import 'rsvp_form_dialog.dart';
 
+/// Home screen showing upcoming events
 class HomeScreen extends StatefulWidget {
+  // Shared list of past events, passed from parent
   final List<Map<String, String>> pastEvents;
 
   const HomeScreen({required this.pastEvents, Key? key}) : super(key: key);
@@ -12,6 +14,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // List of upcoming events displayed in the home screen
   List<Map<String, String>> events = [
     {
       "title": "Flutter Workshop",
@@ -25,24 +28,28 @@ class _HomeScreenState extends State<HomeScreen> {
     },
   ];
 
-  // Move RSVP'd event to past events safely
+  // ================= Helper Methods =================
+
+  /// Move an RSVP'd event to the past events list
   void moveToPast(Map<String, String> event) {
     setState(() {
-      events.remove(event);
-      widget.pastEvents.add(event);
+      events.remove(event); // Remove from upcoming events
+      widget.pastEvents.add(event); // Add to past events
     });
   }
 
-  // Handle RSVP dialog
+  /// Show RSVP dialog for an event
   void handleRSVP(Map<String, String> event) async {
+    // Display the RSVP form dialog
     final rsvp = await showDialog<Map<String, String>>(
       context: context,
       builder: (_) => RSVPFormDialog(event: event),
     );
+    // If user submits RSVP, move event to past events
     if (rsvp != null) moveToPast(event);
   }
 
-  // Show add event form dialog
+  /// Show a dialog to add a new event
   Future<Map<String, String>?> _showAddEventDialog() async {
     final _formKey = GlobalKey<FormState>();
     String title = '';
@@ -53,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
     String description = '';
     String image = '';
 
-    // Persistent controllers for date and time
+    // Controllers for date and time pickers
     final TextEditingController dateController = TextEditingController();
     final TextEditingController timeController = TextEditingController();
 
@@ -68,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  // Title input
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Title'),
                     validator: (val) =>
@@ -75,6 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onSaved: (val) => title = val!.trim(),
                   ),
                   SizedBox(height: 8),
+                  // Location input
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Location'),
                     validator: (val) =>
@@ -82,6 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onSaved: (val) => location = val!.trim(),
                   ),
                   SizedBox(height: 8),
+                  // Organizer input
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Organizer'),
                     validator: (val) =>
@@ -89,6 +99,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onSaved: (val) => organizer = val!.trim(),
                   ),
                   SizedBox(height: 8),
+                  // Description input
                   TextFormField(
                     decoration: InputDecoration(labelText: 'Description'),
                     validator: (val) =>
@@ -96,6 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onSaved: (val) => description = val!.trim(),
                   ),
                   SizedBox(height: 8),
+                  // Optional Image URL
                   TextFormField(
                     decoration: InputDecoration(
                       labelText: 'Image URL (optional)',
@@ -103,10 +115,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     onSaved: (val) => image = val?.trim() ?? '',
                   ),
                   SizedBox(height: 8),
-                  // Date field
+                  // Date picker
                   TextFormField(
                     controller: dateController,
-                    readOnly: true,
+                    readOnly: true, // Prevent typing, only pick from picker
                     decoration: InputDecoration(
                       labelText: 'Date',
                       suffixIcon: Icon(Icons.calendar_today),
@@ -127,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         val == null || val.isEmpty ? 'Select date' : null,
                   ),
                   SizedBox(height: 8),
-                  // Time field
+                  // Time picker
                   TextFormField(
                     controller: timeController,
                     readOnly: true,
@@ -180,6 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // ================= Build UI =================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -198,6 +211,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+      // Floating button to add new events
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final newEvent = await _showAddEventDialog();
@@ -210,6 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Icon(Icons.add),
         backgroundColor: Colors.deepPurpleAccent,
       ),
+      // Main list of upcoming events
       body: Padding(
         padding: EdgeInsets.all(16),
         child: ListView.builder(
@@ -226,13 +241,14 @@ class _HomeScreenState extends State<HomeScreen> {
             final image = event['image'] ?? '';
 
             return GestureDetector(
+              // Navigate to detailed event page on tap
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (_) => EventDetailScreen(
                       event: event,
-                      onRSVP: () => handleRSVP(event),
+                      onRSVP: () => handleRSVP(event), // Pass RSVP handler
                     ),
                   ),
                 );
@@ -247,6 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Event image
                     if (image.isNotEmpty)
                       ClipRRect(
                         borderRadius: BorderRadius.vertical(
@@ -259,6 +276,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           fit: BoxFit.cover,
                         ),
                       ),
+                    // Event details
                     Padding(
                       padding: EdgeInsets.all(16),
                       child: Column(
@@ -324,6 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           SizedBox(height: 12),
                           Text(description, style: TextStyle(fontSize: 14)),
                           SizedBox(height: 16),
+                          // RSVP button
                           Center(
                             child: ElevatedButton(
                               onPressed: () => handleRSVP(event),

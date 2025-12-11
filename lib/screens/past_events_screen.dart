@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
 import 'event_detail_screen.dart';
 
+/// Screen to display both registered and past events
 class PastEventsScreen extends StatelessWidget {
+  // List of past events
   final List<Map<String, String>> pastEvents;
+
+  // List of events the user has registered for
   final List<Map<String, String>> registeredEvents;
 
+  /// Constructor allows passing both lists of events.
+  /// registeredEvents is optional and defaults to empty list.
   const PastEventsScreen({
     required this.pastEvents,
     this.registeredEvents = const [],
     Key? key,
   }) : super(key: key);
 
+  // ================= Helper to build a single event card =================
   Widget buildEventCard(BuildContext context, Map<String, String> event) {
-    final title = event['title'] ?? 'No Title';
-    final date = event['date'] ?? 'No Date';
-    final image = event['image'] ?? '';
+    final title = event['title'] ?? 'No Title'; // Fallback title
+    final date = event['date'] ?? 'No Date'; // Fallback date
+    final image = event['image'] ?? ''; // Fallback image URL
 
     return GestureDetector(
+      // Tap event navigates to event details page
       onTap: () {
         Navigator.push(
           context,
@@ -24,6 +32,7 @@ class PastEventsScreen extends StatelessWidget {
         );
       },
       child: Card(
+        // Card UI styling
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 6,
         shadowColor: Colors.deepPurpleAccent.withOpacity(0.3),
@@ -31,6 +40,7 @@ class PastEventsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Show image if available
             if (image.isNotEmpty)
               ClipRRect(
                 borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -41,6 +51,7 @@ class PastEventsScreen extends StatelessWidget {
                   fit: BoxFit.cover,
                 ),
               ),
+            // Event title and date
             Padding(
               padding: EdgeInsets.all(12),
               child: Column(
@@ -74,18 +85,20 @@ class PastEventsScreen extends StatelessWidget {
     );
   }
 
+  // ================= Helper to build a section (Registered or Past) =================
   Widget buildEventSection(
     BuildContext context,
     String title,
     List<Map<String, String>> events,
   ) {
-    if (events.isEmpty) return SizedBox.shrink();
+    if (events.isEmpty) return SizedBox.shrink(); // Return empty if no events
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Section title
           Text(
             title,
             style: TextStyle(
@@ -95,9 +108,11 @@ class PastEventsScreen extends StatelessWidget {
             ),
           ),
           SizedBox(height: 12),
+          // List of events inside this section
           ListView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true, // Needed to embed ListView in Column
+            physics:
+                NeverScrollableScrollPhysics(), // Disable scrolling inside this ListView
             itemCount: events.length,
             itemBuilder: (context, index) =>
                 buildEventCard(context, events[index]),
@@ -110,6 +125,7 @@ class PastEventsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // ================= App Bar =================
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60),
         child: AppBar(
@@ -125,11 +141,15 @@ class PastEventsScreen extends StatelessWidget {
           ),
         ),
       ),
+      // ================= Body =================
       body: SingleChildScrollView(
+        // Scrollable body to prevent overflow
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
+            // Show registered events section
             buildEventSection(context, 'Registered Events', registeredEvents),
+            // Show past events section
             buildEventSection(context, 'Past Events', pastEvents),
           ],
         ),

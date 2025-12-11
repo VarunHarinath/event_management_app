@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+/// This widget shows an RSVP form inside a dialog for a specific event.
+/// Users can enter their details to RSVP for the event.
 class RSVPFormDialog extends StatefulWidget {
+  // The event for which the RSVP is being made
   final Map<String, String> event;
+
   const RSVPFormDialog({required this.event, Key? key}) : super(key: key);
 
   @override
@@ -9,7 +13,10 @@ class RSVPFormDialog extends StatefulWidget {
 }
 
 class _RSVPFormDialogState extends State<RSVPFormDialog> {
+  // Key to uniquely identify the form and allow validation
   final _formKey = GlobalKey<FormState>();
+
+  // Map to store all the user input for RSVP
   final Map<String, String> rsvpData = {
     'name': '',
     'email': '',
@@ -20,17 +27,20 @@ class _RSVPFormDialogState extends State<RSVPFormDialog> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the event title, fallback if none
     final eventTitle = widget.event['title'] ?? 'Unnamed Event';
 
     return AlertDialog(
-      title: Text('RSVP for $eventTitle'),
+      title: Text('RSVP for $eventTitle'), // Dialog title showing event name
       content: SingleChildScrollView(
+        // Allows scrolling if the keyboard or content overflows
         child: Form(
-          key: _formKey,
+          key: _formKey, // Associate the form key
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize:
+                MainAxisSize.min, // Makes the column as small as possible
             children: [
-              // Name
+              // ================= Name Field =================
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Name',
@@ -38,11 +48,12 @@ class _RSVPFormDialogState extends State<RSVPFormDialog> {
                 ),
                 validator: (val) =>
                     val == null || val.isEmpty ? 'Enter your name' : null,
+                // Save value to rsvpData map when form is submitted
                 onSaved: (val) => rsvpData['name'] = val!.trim(),
               ),
               SizedBox(height: 8),
 
-              // Email
+              // ================= Email Field =================
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Email',
@@ -55,18 +66,19 @@ class _RSVPFormDialogState extends State<RSVPFormDialog> {
               ),
               SizedBox(height: 8),
 
-              // Phone
+              // ================= Phone Field =================
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Phone',
                   hintText: 'Enter your phone number',
                 ),
                 keyboardType: TextInputType.phone,
+                // Phone is optional, so no validator
                 onSaved: (val) => rsvpData['phone'] = val?.trim() ?? '',
               ),
               SizedBox(height: 8),
 
-              // Number of Guests
+              // ================= Number of Guests =================
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Number of Guests',
@@ -77,7 +89,7 @@ class _RSVPFormDialogState extends State<RSVPFormDialog> {
               ),
               SizedBox(height: 8),
 
-              // Notes
+              // ================= Notes Field (Optional) =================
               TextFormField(
                 decoration: InputDecoration(
                   labelText: 'Notes (Optional)',
@@ -89,16 +101,23 @@ class _RSVPFormDialogState extends State<RSVPFormDialog> {
           ),
         ),
       ),
+      // ================= Dialog Buttons =================
       actions: [
+        // Cancel button: closes the dialog without saving
         TextButton(
           onPressed: () => Navigator.pop(context, null),
           child: Text('Cancel'),
         ),
+
+        // Submit button: validates and saves the form, then closes dialog
         ElevatedButton(
           onPressed: () {
             if (_formKey.currentState!.validate()) {
-              _formKey.currentState!.save();
-              Navigator.pop(context, rsvpData);
+              _formKey.currentState!.save(); // Save all fields into rsvpData
+              Navigator.pop(
+                context,
+                rsvpData,
+              ); // Return the data to parent screen
             }
           },
           child: Text('Submit'),

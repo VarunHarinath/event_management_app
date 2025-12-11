@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'event_detail_screen.dart';
 
+/// Explore screen shows categorized events and allows searching
 class ExploreScreen extends StatefulWidget {
   @override
   _ExploreScreenState createState() => _ExploreScreenState();
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
+  // Sample categorized events data
+  // Each category has a list of events with title, date, and optional image
   final Map<String, List<Map<String, String>>> categorizedEvents = {
     "Workshops": [
       {"title": "Flutter Basics", "date": "Dec 12, 2025", "image": ""},
@@ -26,11 +29,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
     ],
   };
 
+  // Query string for search input
   String query = "";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // AppBar with gradient background
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(60),
         child: AppBar(
@@ -50,7 +55,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Column(
           children: [
-            // Search field
+            // ================= Search Field =================
             TextField(
               decoration: InputDecoration(
                 hintText: 'Search events...',
@@ -66,11 +71,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
             ),
             SizedBox(height: 16),
 
-            // Expanded List
+            // ================= Event Categories =================
             Expanded(
               child: ListView(
                 children: categorizedEvents.entries.map((entry) {
-                  final category = entry.key;
+                  final category = entry.key; // e.g., "Workshops"
+                  // Filter events based on search query
                   final events = entry.value
                       .where(
                         (e) => (e['title'] ?? '').toLowerCase().contains(
@@ -79,11 +85,12 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       )
                       .toList();
 
-                  if (events.isEmpty) return SizedBox.shrink();
+                  if (events.isEmpty) return SizedBox.shrink(); // Skip empty
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      // Category title
                       Text(
                         category,
                         style: TextStyle(
@@ -94,7 +101,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       ),
                       SizedBox(height: 12),
 
-                      // Horizontal event cards
+                      // Horizontal scrollable event cards
                       SizedBox(
                         height: 180,
                         child: ListView.separated(
@@ -109,6 +116,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
 
                             return GestureDetector(
                               onTap: () {
+                                // Navigate to event details
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -142,6 +150,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                       CrossAxisAlignment.stretch,
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
+                                    // Event image or placeholder
                                     ClipRRect(
                                       borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(16),
@@ -162,6 +171,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                               ),
                                             ),
                                     ),
+                                    // Event title and date
                                     Padding(
                                       padding: EdgeInsets.all(8),
                                       child: Column(
