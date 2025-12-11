@@ -10,7 +10,13 @@ class RSVPFormDialog extends StatefulWidget {
 
 class _RSVPFormDialogState extends State<RSVPFormDialog> {
   final _formKey = GlobalKey<FormState>();
-  final Map<String, String> rsvpData = {'name': '', 'email': ''};
+  final Map<String, String> rsvpData = {
+    'name': '',
+    'email': '',
+    'phone': '',
+    'guests': '',
+    'notes': '',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -18,32 +24,69 @@ class _RSVPFormDialogState extends State<RSVPFormDialog> {
 
     return AlertDialog(
       title: Text('RSVP for $eventTitle'),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Name field
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Name',
-                hintText: 'Enter your full name',
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Name
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  hintText: 'Enter your full name',
+                ),
+                validator: (val) =>
+                    val == null || val.isEmpty ? 'Enter your name' : null,
+                onSaved: (val) => rsvpData['name'] = val!.trim(),
               ),
-              onSaved: (val) => rsvpData['name'] = val?.trim() ?? '',
-            ),
+              SizedBox(height: 8),
 
-            SizedBox(height: 12),
-
-            // Email field
-            TextFormField(
-              decoration: InputDecoration(
-                labelText: 'Email',
-                hintText: 'Enter your email',
+              // Email
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Email',
+                  hintText: 'Enter your email',
+                ),
+                keyboardType: TextInputType.emailAddress,
+                validator: (val) =>
+                    val == null || val.isEmpty ? 'Enter your email' : null,
+                onSaved: (val) => rsvpData['email'] = val!.trim(),
               ),
-              keyboardType: TextInputType.emailAddress,
-              onSaved: (val) => rsvpData['email'] = val?.trim() ?? '',
-            ),
-          ],
+              SizedBox(height: 8),
+
+              // Phone
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Phone',
+                  hintText: 'Enter your phone number',
+                ),
+                keyboardType: TextInputType.phone,
+                onSaved: (val) => rsvpData['phone'] = val?.trim() ?? '',
+              ),
+              SizedBox(height: 8),
+
+              // Number of Guests
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Number of Guests',
+                  hintText: 'Enter number of guests',
+                ),
+                keyboardType: TextInputType.number,
+                onSaved: (val) => rsvpData['guests'] = val?.trim() ?? '',
+              ),
+              SizedBox(height: 8),
+
+              // Notes
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Notes (Optional)',
+                  hintText: 'Any special requests or notes',
+                ),
+                onSaved: (val) => rsvpData['notes'] = val?.trim() ?? '',
+              ),
+            ],
+          ),
         ),
       ),
       actions: [
@@ -53,8 +96,10 @@ class _RSVPFormDialogState extends State<RSVPFormDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            _formKey.currentState?.save();
-            Navigator.pop(context, rsvpData);
+            if (_formKey.currentState!.validate()) {
+              _formKey.currentState!.save();
+              Navigator.pop(context, rsvpData);
+            }
           },
           child: Text('Submit'),
         ),
